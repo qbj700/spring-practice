@@ -1,6 +1,8 @@
 package com.sbs.springPractice.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.springPractice.dto.Article;
+import com.sbs.springPractice.util.Util;
 
 @Controller
 public class UsrArticleController {
@@ -39,7 +42,12 @@ public class UsrArticleController {
 	
 	@RequestMapping("/usr/article/doAdd")
 	@ResponseBody
-	public Map<String, Object> doAdd(String regDate, String updateDate, String title, String body) {
+	public Map<String, Object> doAdd(String title, String body) {
+		
+		
+		String regDate = Util.getNowDateStr();
+		String updateDate = Util.getNowDateStr();
+		
 		articles.add(new Article(++articlesLastId, regDate, updateDate, title, body));
 		
 		Map<String, Object> rs = new HashMap<>();
@@ -50,7 +58,7 @@ public class UsrArticleController {
 		return rs;
 		
 	}
-	
+
 	@RequestMapping("/usr/article/doDelete")
 	@ResponseBody
 	public Map<String, Object> doDelete(int id) {
@@ -107,6 +115,9 @@ public class UsrArticleController {
 		
 		selArticle.setTitle(title);
 		selArticle.setBody(body);
+		
+		String updateDate = Util.getNowDateStr();
+		selArticle.setUpdateDate(updateDate);
 		
 		rs.put("resultCode", "S-1");
 		rs.put("msg", String.format("%d번 게시물이 수정되었습니다.", id));
