@@ -1,6 +1,5 @@
 package com.sbs.springPractice.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sbs.springPractice.dto.Article;
 import com.sbs.springPractice.dto.ResultData;
 import com.sbs.springPractice.service.ArticleService;
-import com.sbs.springPractice.util.Util;
 
 @Controller
 public class UsrArticleController {
@@ -31,8 +29,17 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/list")
 	@ResponseBody
-	public List<Article> showList() {
-		return articleService.getArticles();
+	public List<Article> showList(String searchKeyword) {
+		
+		if ( searchKeyword != null && searchKeyword.length() == 0 ) {
+			searchKeyword = null;
+		}
+		
+		if ( searchKeyword != null ) {
+			searchKeyword = searchKeyword.trim();
+		}
+		
+		return articleService.getArticles(searchKeyword);
 	}
 
 	@RequestMapping("/usr/article/doAdd")
