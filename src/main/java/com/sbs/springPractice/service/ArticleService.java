@@ -24,21 +24,23 @@ public class ArticleService {
 	}
 
 	public ResultData addArticle(String title, String body) {
-		return articleDao.addArticle(title, body);
+		articleDao.addArticle(title, body);
+
+		int id = 1; // 임시
+
+		return new ResultData("S-1", "성공하였습니다.", "id", id);
 	}
 
 	public ResultData deleteArticle(int id) {
-		boolean rs = articleDao.deleteArticle(id);
-		
-		if (rs == false) {
-			new ResultData("F-1", String.format("%d번 게시물은 존재하지않습니다.", id));
-		}
+		articleDao.deleteArticle(id);
 		
 		return new ResultData("S-1", "성공하였습니다.", "id", id);
 	}
 
 	public ResultData modifyArticle(int id, String title, String body) {
-		return articleDao.modifyArticle(id, title, body);
+		articleDao.modifyArticle(id, title, body);
+
+		return new ResultData("S-1", "게시물을 수정하였습니다.", "id", id);
 	}
 
 }
