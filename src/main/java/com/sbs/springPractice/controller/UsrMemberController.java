@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sbs.springPractice.dto.Member;
 import com.sbs.springPractice.dto.ResultData;
 import com.sbs.springPractice.service.MemberService;
 
@@ -22,6 +23,13 @@ public class UsrMemberController {
 		if (param.get("loginId") == null) {
 			return new ResultData("F-1", "loginId를 입력해주세요.");
 		}
+		
+		Member existingMember = memberService.getMemberByLoginId((String) param.get("loginId"));
+		
+		if (existingMember != null) {
+			return new ResultData("F-2", String.format("%s (은)는 이미 사용중인 로그인아이디 입니다.", param.get("loginId")));
+		}
+		
 		if (param.get("loginPw") == null) {
 			return new ResultData("F-1", "loginPw를 입력해주세요.");
 		}
