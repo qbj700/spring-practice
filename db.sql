@@ -9,7 +9,8 @@ CREATE TABLE article (
     regDate DATETIME NOT NULL,
     updateDate DATETIME NOT NULL,
     title CHAR(100) NOT NULL,
-    `body` TEXT NOT NULL
+    `body` TEXT NOT NULL,
+    memberId INT(10) UNSIGNED NOT NULL
 );
 
 # 게시물, 테스트 데이터 생성
@@ -17,19 +18,22 @@ INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 title = "제목1 입니다.",
-`body` = "내용1 입니다.";
+`body` = "내용1 입니다.",
+memberId = 1;
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 title = "제목2 입니다.",
-`body` = "내용2 입니다.";
+`body` = "내용2 입니다.",
+memberId = 1;
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 title = "제목3 입니다.",
-`body` = "내용3 입니다."; 
+`body` = "내용3 입니다.",
+memberId = 2;
 
 # 회원 테이블 생성
 CREATE TABLE `member` (
