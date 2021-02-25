@@ -16,6 +16,8 @@ public class ArticleService {
 
 	@Autowired
 	private ArticleDao articleDao;
+	@Autowired
+	private MemberService memberService;
 
 	public Article getArticle(int id) {
 		return articleDao.getArticle(id);
@@ -43,6 +45,23 @@ public class ArticleService {
 		articleDao.modifyArticle(id, title, body);
 
 		return new ResultData("S-1", "게시물을 수정하였습니다.", "id", id);
+	}
+
+	public ResultData getActorCanModifyRd(Article article, int actorId) {
+		if ( article.getMemberId() == actorId) {
+			return new ResultData("S-1", "가능합니다.");
+		}
+		
+		if ( memberService.isAdmin(actorId)) {
+			return new ResultData("S-1", "가능합니다.");
+		}
+		
+		return new ResultData("F-1", "해당 게시물의 권한이 존재하지 않습니다.");
+	}
+
+	public ResultData getActorCanDeleteRd(Article article, int actorId) {
+		
+		return getActorCanModifyRd(article, actorId);
 	}
 
 }

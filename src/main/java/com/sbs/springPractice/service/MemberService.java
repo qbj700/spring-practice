@@ -40,4 +40,11 @@ public Member getMember(int id) {
 		
 	}
 
+	public boolean isAdmin(int actorId) {
+		if (actorId == 1) {
+			return true;
+		}
+		return false;
+	}
+
 }
