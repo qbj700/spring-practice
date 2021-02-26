@@ -9,5 +9,10 @@ import com.sbs.springPractice.dto.Reply;
 
 @Mapper
 public interface ReplyDao {
+	
 	List<Reply> getForPrintReplies(@Param("relTypeCode") String relTypeCode, @Param("relId") int relId);
+	
+	Reply getReply(@Param("id") int id);
+
+	void deleteReply(@Param("id") int id);
 }

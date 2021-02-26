@@ -10,12 +10,12 @@ import com.sbs.springPractice.dto.Member;
 @Mapper
 public interface MemberDao {
 
-	public void join(Map<String, Object> param);
+	void join(Map<String, Object> param);
 	
-	public Member getMember(@Param("id") int id);
+	Member getMember(@Param("id") int id);
 
-	public Member getMemberByLoginId(@Param("loginId") String loginId);
+	Member getMemberByLoginId(@Param("loginId") String loginId);
 
-	public void modify(Map<String, Object> param);
+	void modify(Map<String, Object> param);
 
 }
