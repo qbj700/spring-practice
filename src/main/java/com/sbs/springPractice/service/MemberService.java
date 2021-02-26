@@ -41,10 +41,12 @@ public Member getMember(int id) {
 	}
 
 	public boolean isAdmin(int actorId) {
-		if (actorId == 1) {
-			return true;
-		}
-		return false;
+		return actorId == 1;
+	}
+
+	
+	public boolean isAdmin(Member actor) {
+		return isAdmin(actor.getId());
 	}
 
 }
