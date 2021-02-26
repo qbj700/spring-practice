@@ -37,7 +37,7 @@ public class ArticleService {
 
 	public ResultData deleteArticle(int id) {
 		articleDao.deleteArticle(id);
-		
+
 		return new ResultData("S-1", "성공하였습니다.", "id", id);
 	}
 
@@ -48,19 +48,19 @@ public class ArticleService {
 	}
 
 	public ResultData getActorCanModifyRd(Article article, int actorId) {
-		if ( article.getMemberId() == actorId) {
+		if (article.getMemberId() == actorId) {
 			return new ResultData("S-1", "가능합니다.");
 		}
-		
-		if ( memberService.isAdmin(actorId)) {
+
+		if (memberService.isAdmin(actorId)) {
 			return new ResultData("S-1", "가능합니다.");
 		}
-		
+
 		return new ResultData("F-1", "해당 게시물의 권한이 존재하지 않습니다.");
 	}
 
 	public ResultData getActorCanDeleteRd(Article article, int actorId) {
-		
+
 		return getActorCanModifyRd(article, actorId);
 	}
 
@@ -68,8 +68,12 @@ public class ArticleService {
 		return articleDao.getForPrintArticle(id);
 	}
 
-	public List<Article> getForPrintArticles(String searchKeywordType, String searchKeyword) {
-		return articleDao.getForPrintArticles(searchKeywordType, searchKeyword);
+	public List<Article> getForPrintArticles(String searchKeywordType, String searchKeyword, int page, int itemsInAPage) {
+
+		int limitStart = (page - 1) * itemsInAPage;
+		int limitTake = itemsInAPage;
+
+		return articleDao.getForPrintArticles(searchKeywordType, searchKeyword, limitStart, limitTake);
 	}
 
 }
