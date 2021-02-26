@@ -102,28 +102,33 @@ CREATE TABLE reply (
   id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
   regDate DATETIME NOT NULL,
   updateDate DATETIME NOT NULL,
-  articleId INT(10) UNSIGNED NOT NULL,
+  relId INT(10) UNSIGNED NOT NULL,
+  relTypeCode CHAR(10) NOT NULL,
   memberId INT(10) UNSIGNED NOT NULL,
-  `body` TEXT NOT NULL
+  `body` TEXT NOT NULL,
+  INDEX (relTypeCode, relId)
 );
 
 INSERT INTO reply
 SET regDate = NOW(),
 updateDate = NOW(),
-articleId = 1,
+relId = 1,
+relTypeCode = 'article',
 memberId = 1,
 `body` = "내용1 입니다.";
 
 INSERT INTO reply
 SET regDate = NOW(),
 updateDate = NOW(),
-articleId = 1,
+relId = 1,
+relTypeCode = 'article',
 memberId = 2,
 `body` = "내용2 입니다.";
 
 INSERT INTO reply
 SET regDate = NOW(),
 updateDate = NOW(),
-articleId = 2,
+relId = 2,
+relTypeCode = 'article',
 memberId = 2,
 `body` = "내용3 입니다."; 
