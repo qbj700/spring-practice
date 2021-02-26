@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.sbs.springPractice.dao.ArticleDao;
 import com.sbs.springPractice.dto.Article;
+import com.sbs.springPractice.dto.Board;
 import com.sbs.springPractice.dto.ResultData;
 import com.sbs.springPractice.util.Util;
 
@@ -74,6 +75,10 @@ public class ArticleService {
 		int limitTake = itemsInAPage;
 
 		return articleDao.getForPrintArticles(boardId, searchKeywordType, searchKeyword, limitStart, limitTake);
+	}
+
+	public Board getBoard(int id) {
+		return articleDao.getBoard(id);
 	}
 
 }
