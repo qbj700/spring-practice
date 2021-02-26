@@ -88,6 +88,9 @@ public class UsrArticleController {
 		if (param.get("body") == null) {
 			return new ResultData("F-1", "body를 입력해주세요.");
 		}
+		if (param.get("boardId") == null) {
+			return new ResultData("F-1", "boardId를 입력해주세요.");
+		}
 		
 		param.put("memberId", loginedMemberId);
 
