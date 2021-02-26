@@ -48,5 +48,9 @@ public Member getMember(int id) {
 	public boolean isAdmin(Member actor) {
 		return isAdmin(actor.getId());
 	}
+	
+	public Member getMemberByAuthKey(String authKey) {
+		return memberDao.getMemberByAuthKey(authKey);
+	}
 
 }

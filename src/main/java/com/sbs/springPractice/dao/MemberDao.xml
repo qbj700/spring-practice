@@ -54,5 +54,11 @@
 		</set>
 		WHERE id = #{id}
 	</update>
+	
+	<select id="getMemberByAuthKey" resultType="Member">
+		SELECT *
+		FROM `member`
+		WHERE authKey = #{authKey}
+	</select>
 
 </mapper>

@@ -1,8 +1,12 @@
 package com.sbs.springPractice.controller;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sbs.springPractice.util.Util;
 
 @Controller
 public class UsrHomeController {
@@ -10,6 +14,12 @@ public class UsrHomeController {
 	@ResponseBody
 	public String showMain() {
 		return "안녕";
+	}
+	
+	@RequestMapping("/usr/home/doFormTest")
+	@ResponseBody
+	public Map<String, Object> doFormTest(String name, int age) {
+		return Util.mapOf("name", name, "age", age);
 	}
 
 }
