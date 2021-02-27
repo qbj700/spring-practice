@@ -85,7 +85,7 @@ public class UsrMemberController {
 			return new ResultData("F-3", "비밀번호가 일치하지 않습니다.");
 		}
 
-		return new ResultData("S-1", String.format("%s님 환영합니다.", existingMember.getNickname()), "authKey", existingMember.getAuthKey(), "id", existingMember.getId(), "name", existingMember.getName(), "nickname", existingMember.getNickname());
+		return new ResultData("S-1", String.format("%s님 환영합니다.", existingMember.getNickname()), "authKey", existingMember.getAuthKey(), "member", existingMember);
 	}
 	
 	@RequestMapping("/usr/member/doLogin")
