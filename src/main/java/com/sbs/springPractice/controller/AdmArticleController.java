@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,12 +17,15 @@ import com.sbs.springPractice.dto.Article;
 import com.sbs.springPractice.dto.Board;
 import com.sbs.springPractice.dto.ResultData;
 import com.sbs.springPractice.service.ArticleService;
+import com.sbs.springPractice.service.GenFileService;
 import com.sbs.springPractice.util.Util;
 
 @Controller
 public class AdmArticleController extends BaseController {
 	@Autowired
 	private ArticleService articleService;
+	@Autowired
+	private GenFileService genFileService;
 
 	@RequestMapping("/adm/article/detail")
 	@ResponseBody
@@ -42,14 +44,15 @@ public class AdmArticleController extends BaseController {
 	}
 
 	@RequestMapping("/adm/article/list")
-	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
+	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId,
+			String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
 
 		Board board = articleService.getBoard(boardId);
-		
-		if ( board == null ) {
+
+		if (board == null) {
 			return msgAndBack(req, "존재하지 않는 게시판 입니다.");
 		}
-		
+
 		if (searchKeywordType != null) {
 			searchKeywordType = searchKeywordType.trim();
 		}
@@ -69,24 +72,25 @@ public class AdmArticleController extends BaseController {
 		if (searchKeyword == null) {
 			searchKeywordType = null;
 		}
-		
+
 		int itemsInAPage = 20;
 
-		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, page, itemsInAPage);
+		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, page,
+				itemsInAPage);
 		req.setAttribute("articles", articles);
 
 		return "adm/article/list";
 	}
-	
+
 	@RequestMapping("/adm/article/doAddReply")
 	@ResponseBody
 	public ResultData doAddReply(@RequestParam Map<String, Object> param, HttpServletRequest req) {
-		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 
 		if (param.get("body") == null) {
 			return new ResultData("F-1", "body를 입력해주세요.");
 		}
-		
+
 		if (param.get("articleId") == null) {
 			return new ResultData("F-1", "articleId를 입력해주세요.");
 		}
@@ -95,7 +99,7 @@ public class AdmArticleController extends BaseController {
 
 		return articleService.addReply(param);
 	}
-	
+
 	@RequestMapping("/adm/article/add")
 	public String showAdd(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		return "adm/article/add";
@@ -105,14 +109,8 @@ public class AdmArticleController extends BaseController {
 	@ResponseBody
 	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req,
 			MultipartRequest multipartRequest) {
-		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-		
-		if ( true ) {
-			return new ResultData("S-1", "테스트", "fileMap.keySet", fileMap.keySet());			
-		}
-		
-		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
-		
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+
 		if (param.get("title") == null) {
 			return new ResultData("F-1", "title을 입력해주세요.");
 		}
@@ -120,18 +118,51 @@ public class AdmArticleController extends BaseController {
 		if (param.get("body") == null) {
 			return new ResultData("F-1", "body를 입력해주세요.");
 		}
-		
-		
 
 		param.put("memberId", loginedMemberId);
 
-		return articleService.addArticle(param);
+		ResultData addArticleRd = articleService.addArticle(param);
+
+		int newArticleId = (int) addArticleRd.getBody().get("id");
+
+		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+
+		for (String fileInputName : fileMap.keySet()) {
+			MultipartFile multipartFile = fileMap.get(fileInputName);
+			String[] fileInputNameBits = fileInputName.split("__");
+
+			if (fileInputNameBits[0].equals("file") == false) {
+				continue;
+			}
+
+			int fileSize = (int) multipartFile.getSize();
+
+			if (fileSize <= 0) {
+				continue;
+			}
+
+			String relTypeCode = fileInputNameBits[1];
+			int relId = newArticleId;
+			String typeCode = fileInputNameBits[3];
+			String type2Code = fileInputNameBits[4];
+			int fileNo = Integer.parseInt(fileInputNameBits[5]);
+			String originFileName = multipartFile.getOriginalFilename();
+			String fileExtTypeCode = Util.getFileExtTypeCodeFromFileName(multipartFile.getOriginalFilename());
+			String fileExtType2Code = Util.getFileExtType2CodeFromFileName(multipartFile.getOriginalFilename());
+			String fileExt = Util.getFileExtFromFileName(multipartFile.getOriginalFilename()).toLowerCase();
+			String fileDir = Util.getNowYearMonthDateStr();
+
+			genFileService.saveMeta(relTypeCode, relId, typeCode, type2Code, fileNo, originFileName, fileExtTypeCode,
+					fileExtType2Code, fileExt, fileSize, fileDir);
+		}
+
+		return addArticleRd;
 	}
 
 	@RequestMapping("/adm/article/doDelete")
 	@ResponseBody
 	public ResultData doDelete(Integer id, HttpServletRequest req) {
-		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 
 		if (id == null) {
 			return new ResultData("F-1", "id를 입력해주세요.");
@@ -155,7 +186,7 @@ public class AdmArticleController extends BaseController {
 	@RequestMapping("/adm/article/doModify")
 	@ResponseBody
 	public ResultData doModify(Integer id, String title, String body, HttpServletRequest req) {
-		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
+		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 
 		if (id == null) {
 			return new ResultData("F-1", "id를 입력해주세요.");
