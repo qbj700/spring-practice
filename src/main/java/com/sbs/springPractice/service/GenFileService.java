@@ -23,7 +23,7 @@ import com.sbs.springPractice.util.Util;
 public class GenFileService {
 	@Value("${custom.genFileDirPath}")
 	private String genFileDirPath;
-	
+
 	@Autowired
 	private GenFileDao genFileDao;
 
@@ -40,7 +40,7 @@ public class GenFileService {
 		int id = Util.getAsInt(param.get("id"), 0);
 		return new ResultData("S-1", "성공하였습니다.", "id", id);
 	}
-	
+
 	public ResultData save(MultipartFile multipartFile, int relId) {
 		String fileInputName = multipartFile.getName();
 		String[] fileInputNameBits = fileInputName.split("__");
@@ -102,10 +102,10 @@ public class GenFileService {
 	public GenFile getGenFile(String relTypeCode, int relId, String typeCode, String type2Code, int fileNo) {
 		return genFileDao.getGenFile(relTypeCode, relId, typeCode, type2Code, fileNo);
 	}
-	
+
 	public ResultData saveFiles(MultipartRequest multipartRequest) {
 		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-
+		
 		Map<String, ResultData> filesResultData = new HashMap<>();
 		List<Integer> genFileIds = new ArrayList<>();
 
@@ -120,7 +120,7 @@ public class GenFileService {
 				filesResultData.put(fileInputName, fileResultData);
 			}
 		}
-
+		
 		String genFileIdsStr = Joiner.on(",").join(genFileIds);
 
 		return new ResultData("S-1", "파일을 업로드하였습니다.", "filesResultData", filesResultData, "genFileIdsStr",
@@ -130,5 +130,4 @@ public class GenFileService {
 	public void changeRelId(int id, int relId) {
 		genFileDao.changeRelId(id, relId);
 	}
-
 }

@@ -13,7 +13,6 @@ import com.sbs.springPractice.service.GenFileService;
 public class CommonGenFileController extends BaseController {
 	@Autowired
 	private GenFileService genFileService;
-
 	
 	@RequestMapping("/common/genFile/doUpload")
 	@ResponseBody

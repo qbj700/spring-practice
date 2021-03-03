@@ -31,7 +31,6 @@ function ArticleAdd__checkAndSubmit(form) {
 	}
 	var maxSizeMb = 50;
 	var maxSize = maxSizeMb * 1024 * 1024;
-
 	for ( let inputNo = 1; inputNo <= ArticleAdd__fileInputMaxCount; inputNo++ ) {
 		const input = form["file__article__0__common__attachment__" + inputNo];
 		
@@ -44,14 +43,10 @@ function ArticleAdd__checkAndSubmit(form) {
 			}
 		}
 	}
-
 	const startSubmitForm = function(data) {
-		let genFileIdsStr = '';
 		if (data && data.body && data.body.genFileIdsStr) {
 			form.genFileIdsStr.value = data.body.genFileIdsStr;
 		}
-		
-		form.genFileIdsStr.value = genFileIdsStr;
 		
 		for ( let inputNo = 1; inputNo <= ArticleAdd__fileInputMaxCount; inputNo++ ) {
 			const input = form["file__article__0__common__attachment__" + inputNo];
@@ -60,17 +55,19 @@ function ArticleAdd__checkAndSubmit(form) {
 		
 		form.submit();
 	};
-	
 	const startUploadFiles = function(onSuccess) {
 		var needToUpload = false;
-		
 		for ( let inputNo = 1; inputNo <= ArticleAdd__fileInputMaxCount; inputNo++ ) {
 			const input = form["file__article__0__common__attachment__" + inputNo];
-			
-				if ( input.value.length > 0 ) {
-					needToUpload = true;
-					break;
-				}
+			if ( input.value.length > 0 ) {
+				needToUpload = true;
+				break;
+			}
+		}
+		
+		if (needToUpload == false) {
+			onSuccess();
+			return;
 		}
 		
 		var fileUploadFormData = new FormData(form);
@@ -85,9 +82,7 @@ function ArticleAdd__checkAndSubmit(form) {
 			success : onSuccess
 		});
 	}
-	
 	ArticleAdd__submited = true;
-
 	startUploadFiles(startSubmitForm);
 }
 </script>
@@ -102,7 +97,7 @@ function ArticleAdd__checkAndSubmit(form) {
 					<span>제목</span>
 				</div>
 				<div class="lg:flex-grow">
-					<input type="text" name="title" autocomplete="off" autofocus="autofocus"
+					<input type="text" name="title" autofocus="autofocus"
 						class="form-row-input w-full rounded-sm" placeholder="제목을 입력해주세요." />
 				</div>
 			</div>
@@ -114,7 +109,6 @@ function ArticleAdd__checkAndSubmit(form) {
 					<textarea name="body" class="form-row-input w-full rounded-sm" placeholder="내용을 입력해주세요."></textarea>
 				</div>
 			</div>
-			
 			<c:forEach begin="1" end="${fileInputMaxCount}" var="inputNo">
 				<div class="form-row flex flex-col lg:flex-row">
 					<div class="lg:flex lg:items-center lg:w-28">
@@ -141,4 +135,4 @@ function ArticleAdd__checkAndSubmit(form) {
 	</div>
 </section>
 
-<%@ include file="../part/mainLayoutFoot.jspf"%> 
+<%@ include file="../part/mainLayoutFoot.jspf"%>

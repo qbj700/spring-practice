@@ -20,8 +20,8 @@
 }
 
 html > body {
- font-family: 'LotteMartDream', sans-serif;
-} 
+  font-family: 'LotteMartDream', sans-serif;
+}
 
 .logo {
   font-size:2rem;
@@ -32,9 +32,9 @@ html > body {
   font-style:italic;
   margin-left:0.5rem;
   font-weight:bold;
-} 
+}
 
-form-row + .form-row {
+.form-row + .form-row {
 	margin-top:10px;
 }
 
@@ -44,4 +44,4 @@ form-row + .form-row {
 
 textarea.form-row-input {
 	min-height:100px;
-} 
+}
