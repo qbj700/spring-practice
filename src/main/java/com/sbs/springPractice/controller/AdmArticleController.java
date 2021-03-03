@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import com.sbs.springPractice.dto.Article;
 import com.sbs.springPractice.dto.Board;
+import com.sbs.springPractice.dto.GenFile;
 import com.sbs.springPractice.dto.ResultData;
 import com.sbs.springPractice.service.ArticleService;
 import com.sbs.springPractice.service.GenFileService;
@@ -44,8 +45,7 @@ public class AdmArticleController extends BaseController {
 	}
 
 	@RequestMapping("/adm/article/list")
-	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId,
-			String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
+	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
 
 		Board board = articleService.getBoard(boardId);
 
@@ -75,8 +75,18 @@ public class AdmArticleController extends BaseController {
 
 		int itemsInAPage = 20;
 
-		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, page,
-				itemsInAPage);
+		List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, page, itemsInAPage);
+
+		for (Article article : articles) {
+			GenFile genFile = genFileService.getGenFile("article", article.getId(), "common", "attachment", 1);
+
+
+			if (genFile != null) {
+				article.setExtra__thumbImg(genFile.getForPrintUrl());
+			}
+
+		}
+
 		req.setAttribute("articles", articles);
 
 		return "adm/article/list";
@@ -107,8 +117,7 @@ public class AdmArticleController extends BaseController {
 
 	@RequestMapping("/adm/article/doAdd")
 	@ResponseBody
-	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req,
-			MultipartRequest multipartRequest) {
+	public ResultData doAdd(@RequestParam Map<String, Object> param, HttpServletRequest req, MultipartRequest multipartRequest) {
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
 
 		if (param.get("title") == null) {
@@ -129,8 +138,8 @@ public class AdmArticleController extends BaseController {
 
 		for (String fileInputName : fileMap.keySet()) {
 			MultipartFile multipartFile = fileMap.get(fileInputName);
-			
-			if ( multipartFile.isEmpty() == false ) {
+
+			if (multipartFile.isEmpty() == false) {
 				genFileService.save(multipartFile, newArticleId);
 			}
 		}
