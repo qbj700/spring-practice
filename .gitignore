@@ -1,5 +1,6 @@
 LOG_PATH_IS_UNDEFINED
 log/
+bin/
 
 HELP.md
 target/
