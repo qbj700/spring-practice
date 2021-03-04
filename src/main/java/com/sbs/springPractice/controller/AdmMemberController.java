@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -16,17 +17,34 @@ import com.sbs.springPractice.dto.ResultData;
 import com.sbs.springPractice.service.MemberService;
 import com.sbs.springPractice.util.Util;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @Controller
 public class AdmMemberController {
 	@Autowired
 	private MemberService memberService;
 	
-	@RequestMapping("/adm/member/login")
+	@RequestMapping(value = "/adm/member/login", method = RequestMethod.GET)
+	@ApiOperation(value = "로그인 화면", notes = "성공시 login.jsp의 경로를 반환합니다.")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "성공"),
+		@ApiResponse(code = 400, message = "잘못된 접근"),
+		@ApiResponse(code = 500, message = "서버 에러")
+	})
 	public String login() {
 		return "adm/member/login";
 	}
 
-	@RequestMapping("/adm/member/doLogin")
+	@RequestMapping(value = "/adm/member/doLogin", method = RequestMethod.POST)
+	@ApiOperation(value = "로그인", notes = "성공시 로그인상태가 됩니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam( name = "loginId", value ="로그인아이디", required = true),
+		@ApiImplicitParam( name = "loginPw", value ="로그인비밀번호", required = true)
+	})
 	@ResponseBody
 	public String doLogin(String loginId, String loginPw, String redirectUrl, HttpSession session) {
 		if (loginId == null) {
@@ -60,7 +78,11 @@ public class AdmMemberController {
 		return Util.msgAndReplace(msg, redirectUrl);
 	}
 
-	@RequestMapping("/adm/member/doModify")
+	@RequestMapping(value = "/adm/member/doModify", method = RequestMethod.POST)
+	@ApiOperation(value = "회원정보수정", notes = "성공시 회원정보가 수정됩니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam( name = "memberId", value ="회원번호", required = true)
+	})
 	@ResponseBody
 	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		if (param.isEmpty()) {
@@ -73,7 +95,8 @@ public class AdmMemberController {
 		return memberService.modify(param);
 	}
 	
-	@RequestMapping("/adm/member/doLogout")
+	@RequestMapping(value = "/adm/member/doLogout", method = RequestMethod.DELETE)
+	@ApiOperation(value = "로그아웃", notes = "성공시 로그아웃 상태가 됩니다.")
 	@ResponseBody
 	public String doLogout(HttpSession session) {
 		session.removeAttribute("loginedMemberId");
