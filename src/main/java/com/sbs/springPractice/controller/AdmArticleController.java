@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,12 @@ import com.sbs.springPractice.service.ArticleService;
 import com.sbs.springPractice.service.GenFileService;
 import com.sbs.springPractice.util.Util;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @Controller
 public class AdmArticleController extends BaseController {
 	@Autowired
@@ -29,8 +36,18 @@ public class AdmArticleController extends BaseController {
 	@Autowired
 	private GenFileService genFileService;
 
-	@RequestMapping("/adm/article/detail")
+	
 	@ResponseBody
+	@RequestMapping(value = "/adm/article/detail", method = RequestMethod.GET)
+	@ApiOperation(value = "게시물 상세", notes = "성공시 게시물에 대한 상세정보를 반환합니다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam( name = "id", value ="게시물 번호", required = true)
+	})
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "성공"),
+		@ApiResponse(code = 400, message = "잘못된 접근"),
+		@ApiResponse(code = 500, message = "서버 에러")
+	})
 	public ResultData showDetail(Integer id) {
 		if (id == null) {
 			return new ResultData("F-1", "id를 입력해주세요.");
