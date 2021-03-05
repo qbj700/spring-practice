@@ -144,34 +144,36 @@ public class UsrArticleController {
 
 	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
-	public ResultData doModify(Integer id, String title, String body, HttpSession session) {
-		int loginedMemberId = Util.getAsInt(session.getAttribute("loginedMemberId"), 0);
+	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
+		int loginedMemberId = (int)req.getAttribute("loginedMemberId");
+
+		int id = Util.getAsInt(param.get("id"), 0);
 		
-		if (id == null) {
+		if (id == 0) {
 			return new ResultData("F-1", "id를 입력해주세요.");
 		}
-		
+
+		if (Util.isEmpty(param.get("title"))) {
+			return new ResultData("F-1", "title을 입력해주세요.");
+		}
+
+		if (Util.isEmpty(param.get("title"))) {
+			return new ResultData("F-1", "body를 입력해주세요.");
+		}
+
 		Article article = articleService.getArticle(id);
 
 		if (article == null) {
-			return new ResultData("F-1", String.format("%d번 게시물은 존재하지않습니다.", id));
-		}
-		
-		if (title == null) {
-			title = article.getTitle();
-		}
-		
-		if (body == null) {
-			body = article.getBody();
-		}
-		
-		ResultData getActorCanModifyRd = articleService.getActorCanModifyRd(article, loginedMemberId);
-		
-		if ( getActorCanModifyRd.isFail()) {
-			return getActorCanModifyRd;
+			return new ResultData("F-1", "해당 게시물은 존재하지 않습니다.");
 		}
 
-		return articleService.modifyArticle(id, title, body);
+		ResultData actorCanModifyRd = articleService.getActorCanModifyRd(article, loginedMemberId);
+
+		if (actorCanModifyRd.isFail()) {
+			return actorCanModifyRd;
+		}
+
+		return articleService.modifyArticle(param);
 	}
 
 }

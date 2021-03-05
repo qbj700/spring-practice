@@ -197,6 +197,10 @@ public class AdmArticleController extends BaseController {
 		}
 
 		Article article = articleService.getForPrintArticle(id);
+		
+		if (article == null) {
+			return msgAndBack(req, "존재하지 않는 게시물번호 입니다.");
+		}
 
 		List<GenFile> files = genFileService.getGenFiles("article", article.getId(), "common", "attachment");
 
@@ -209,27 +213,27 @@ public class AdmArticleController extends BaseController {
 		article.getExtraNotNull().put("file__common__attachment", filesMap);
 		req.setAttribute("article", article);
 
-		if (article == null) {
-			return msgAndBack(req, "존재하지 않는 게시물번호 입니다.");
-		}
+		
 
 		return "adm/article/modify";
 	}
 
 	@RequestMapping("/adm/article/doModify")
 	@ResponseBody
-	public ResultData doModify(Integer id, String title, String body, HttpServletRequest req) {
+	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		int loginedMemberId = (int) req.getAttribute("loginedMemberId");
+		
+		int id = Util.getAsInt(param.get("id"), 0);
 
-		if (id == null) {
+		if (id == 0) {
 			return new ResultData("F-1", "id를 입력해주세요.");
 		}
 
-		if (title == null) {
+		if ( Util.isEmpty(param.get("title")) ) {
 			return new ResultData("F-1", "title을 입력해주세요.");
 		}
 
-		if (body == null) {
+		if ( Util.isEmpty(param.get("body")) ) {
 			return new ResultData("F-1", "body를 입력해주세요.");
 		}
 
@@ -245,6 +249,6 @@ public class AdmArticleController extends BaseController {
 			return actorCanModifyRd;
 		}
 
-		return articleService.modifyArticle(id, title, body);
+		return articleService.modifyArticle(param);
 	}
 }
