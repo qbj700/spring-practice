@@ -43,7 +43,7 @@ public class ArticleService {
 	public ResultData deleteArticle(int id) {
 		articleDao.deleteArticle(id);
 		
-		genFileService.deleteFiles("article", id);
+		genFileService.deleteGenFiles("article", id);
 
 		return new ResultData("S-1", "성공하였습니다.", "id", id);
 	}
