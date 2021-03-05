@@ -181,4 +181,8 @@ public class GenFileService {
 
 		genFileDao.deleteFile(genFile.getId());
 	}
+	
+	public GenFile getGenFile(int id) {
+		return genFileDao.getGenFileById(id);
+	}
 }
