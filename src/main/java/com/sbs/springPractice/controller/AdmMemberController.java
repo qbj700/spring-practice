@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +29,55 @@ public class AdmMemberController {
 	@Autowired
 	private MemberService memberService;
 	
+	@RequestMapping(value = "/adm/member/join", method = RequestMethod.GET)
+	@ApiOperation(value = "회원가입 화면", notes = "성공시 join.jsp의 경로를 반환합니다.")
+	public String showJoin() {
+		return "adm/member/join";
+	}
+
+	@RequestMapping(value = "/adm/member/doJoin", method = RequestMethod.POST)
+	@ApiOperation(value = "회원가입", notes = "성공시 msg와 redirectUrl을 반환합니다.")
+	@ResponseBody
+	public String doJoin(@RequestParam Map<String, Object> param) {
+		if (param.get("loginId") == null) {
+			return Util.msgAndBack("loginId를 입력해주세요.");
+		}
+
+		Member existingMember = memberService.getMemberByLoginId((String)param.get("loginId"));
+
+		if (existingMember != null) {
+			return Util.msgAndBack("이미 사용중인 로그인아이디 입니다.");
+		}
+
+		if (param.get("loginPw") == null) {
+			return Util.msgAndBack("loginPw를 입력해주세요.");
+		}
+
+		if (param.get("name") == null) {
+			return Util.msgAndBack("name을 입력해주세요.");
+		}
+
+		if (param.get("nickname") == null) {
+			return Util.msgAndBack("nickname을 입력해주세요.");
+		}
+
+		if (param.get("email") == null) {
+			return Util.msgAndBack("email을 입력해주세요.");
+		}
+
+		if (param.get("cellphoneNo") == null) {
+			return Util.msgAndBack("cellphoneNo를 입력해주세요.");
+		}
+
+		memberService.join(param);
+
+		String msg = String.format("%s님 환영합니다.", param.get("nickname"));
+
+		String redirectUrl = Util.ifEmpty((String)param.get("redirectUrl"), "../member/login");
+
+		return Util.msgAndReplace(msg, redirectUrl);
+	}
+	
 	@RequestMapping(value = "/adm/member/login", method = RequestMethod.GET)
 	@ApiOperation(value = "로그인 화면", notes = "성공시 login.jsp의 경로를 반환합니다.")
 	@ApiResponses({
@@ -35,7 +85,7 @@ public class AdmMemberController {
 		@ApiResponse(code = 400, message = "잘못된 접근"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public String login() {
+	public String showLogin() {
 		return "adm/member/login";
 	}
 
@@ -95,7 +145,7 @@ public class AdmMemberController {
 		return memberService.modify(param);
 	}
 	
-	@RequestMapping(value = "/adm/member/doLogout", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/adm/member/doLogout", method = RequestMethod.GET)
 	@ApiOperation(value = "로그아웃", notes = "성공시 로그아웃 상태가 됩니다.")
 	@ResponseBody
 	public String doLogout(HttpSession session) {
