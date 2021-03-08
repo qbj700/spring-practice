@@ -1,6 +1,7 @@
 package com.sbs.springPractice.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sbs.springPractice.service.MemberService;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
+	MemberService memberService;
+	
 	private int id;
 	private String regDate;
 	private String updateDate;
@@ -24,4 +27,8 @@ public class Member {
 	private String nickname;
 	private String cellphoneNo;
 	private String email;
+	
+	public String getAuthLevelName() {
+		return "일반회원";
+	}
 }

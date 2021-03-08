@@ -1,12 +1,12 @@
 package com.sbs.springPractice.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +28,41 @@ import io.swagger.annotations.ApiResponses;
 public class AdmMemberController {
 	@Autowired
 	private MemberService memberService;
+	
+	@RequestMapping(value = "/adm/member/list", method = RequestMethod.GET)
+	@ApiOperation(value = "회원리스트", notes = "성공시 list.jsp의 경로를 반환합니다.")
+	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId,
+			String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
+		if (searchKeywordType != null) {
+			searchKeywordType = searchKeywordType.trim();
+		}
+
+		if (searchKeywordType == null || searchKeywordType.length() == 0) {
+			searchKeywordType = "name";
+		}
+
+		if (searchKeyword != null && searchKeyword.length() == 0) {
+			searchKeyword = null;
+		}
+
+		if (searchKeyword != null) {
+			searchKeyword = searchKeyword.trim();
+		}
+
+		if (searchKeyword == null) {
+			searchKeywordType = null;
+		}
+
+		int itemsInAPage = 20;
+
+		List<Member> members = memberService.getForPrintMembers(searchKeywordType, searchKeyword, page,
+				itemsInAPage);
+
+		req.setAttribute("members", members);		
+
+		return "adm/member/list";
+	}
+
 	
 	@RequestMapping(value = "/adm/member/join", method = RequestMethod.GET)
 	@ApiOperation(value = "회원가입 화면", notes = "성공시 join.jsp의 경로를 반환합니다.")

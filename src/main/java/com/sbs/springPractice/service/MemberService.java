@@ -1,5 +1,6 @@
 package com.sbs.springPractice.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,13 @@ public Member getMember(int id) {
 	
 	public Member getMemberByAuthKey(String authKey) {
 		return memberDao.getMemberByAuthKey(authKey);
+	}
+	
+	public List<Member> getForPrintMembers(String searchKeywordType, String searchKeyword, int page, int itemsInAPage) {
+		int limitStart = (page - 1) * itemsInAPage;
+		int limitTake = itemsInAPage;
+
+		return memberDao.getForPrintMembers(searchKeywordType, searchKeyword, limitStart, limitTake);
 	}
 
 }
