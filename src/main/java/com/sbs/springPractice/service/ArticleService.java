@@ -11,6 +11,7 @@ import com.sbs.springPractice.dao.ArticleDao;
 import com.sbs.springPractice.dto.Article;
 import com.sbs.springPractice.dto.Board;
 import com.sbs.springPractice.dto.GenFile;
+import com.sbs.springPractice.dto.Member;
 import com.sbs.springPractice.dto.ResultData;
 import com.sbs.springPractice.util.Util;
 
@@ -72,21 +73,20 @@ public class ArticleService {
 		}
 	}
 
-	public ResultData getActorCanModifyRd(Article article, int actorId) {
-		if (article.getMemberId() == actorId) {
+	public ResultData getActorCanModifyRd(Article article, Member actor) {
+		if (article.getMemberId() == actor.getId()) {
 			return new ResultData("S-1", "가능합니다.");
 		}
 
-		if (memberService.isAdmin(actorId)) {
+		if (memberService.isAdmin(actor)) {
 			return new ResultData("S-1", "가능합니다.");
 		}
 
 		return new ResultData("F-1", "해당 게시물의 권한이 존재하지 않습니다.");
 	}
 
-	public ResultData getActorCanDeleteRd(Article article, int actorId) {
-
-		return getActorCanModifyRd(article, actorId);
+	public ResultData getActorCanDeleteRd(Article article, Member actor) {
+		return getActorCanModifyRd(article, actor);
 	}
 
 	public Article getForPrintArticle(int id) {
