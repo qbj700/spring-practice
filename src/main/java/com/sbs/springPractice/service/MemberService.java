@@ -16,6 +16,32 @@ public class MemberService {
 	@Autowired
 	private MemberDao memberDao;
 
+	// static 시작
+
+	public static String getAuthLevelName(Member member) {
+		switch (member.getAuthLevel()) {
+		case 7:
+			return "관리자";
+		case 3:
+			return "일반";
+		default:
+			return "유형정보없음";
+		}
+	}
+
+	public static String getAuthLevelNameColor(Member member) {
+		switch (member.getAuthLevel()) {
+		case 7:
+			return "red";
+		case 3:
+			return "gray";
+		default:
+			return "";
+		}
+	}
+
+	// static 끝
+
 	public ResultData join(Map<String, Object> param) {
 		memberDao.join(param);
 
@@ -23,14 +49,14 @@ public class MemberService {
 
 		return new ResultData("S-1", String.format("%s님 환영합니다.", param.get("nickname")), "id", id);
 	}
-	
-public Member getMember(int id) {
-		
+
+	public Member getMember(int id) {
+
 		return memberDao.getMember(id);
 	}
 
 	public Member getMemberByLoginId(String loginId) {
-		
+
 		return memberDao.getMemberByLoginId(loginId);
 	}
 
@@ -38,22 +64,27 @@ public Member getMember(int id) {
 		memberDao.modify(param);
 
 		return new ResultData("S-1", "회원정보가 수정되었습니다.");
-		
+
 	}
-	
+
 	public boolean isAdmin(Member actor) {
 		return actor.getAuthLevel() == 7;
 	}
-	
+
 	public Member getMemberByAuthKey(String authKey) {
 		return memberDao.getMemberByAuthKey(authKey);
 	}
-	
-	public List<Member> getForPrintMembers(String searchKeywordType, String searchKeyword, int page, int itemsInAPage) {
+
+	public List<Member> getForPrintMembers(String searchKeywordType, String searchKeyword, int page, int itemsInAPage, Map<String, Object> param) {
 		int limitStart = (page - 1) * itemsInAPage;
 		int limitTake = itemsInAPage;
 
-		return memberDao.getForPrintMembers(searchKeywordType, searchKeyword, limitStart, limitTake);
+		param.put("searchKeywordType", searchKeywordType);
+		param.put("searchKeyword", searchKeyword);
+		param.put("limitStart", limitStart);
+		param.put("limitTake", limitTake);
+
+		return memberDao.getForPrintMembers(param);
 	}
 
 }

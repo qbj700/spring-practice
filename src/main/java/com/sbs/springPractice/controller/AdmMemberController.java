@@ -28,11 +28,10 @@ import io.swagger.annotations.ApiResponses;
 public class AdmMemberController {
 	@Autowired
 	private MemberService memberService;
-	
+
 	@RequestMapping(value = "/adm/member/list", method = RequestMethod.GET)
 	@ApiOperation(value = "회원리스트", notes = "성공시 list.jsp의 경로를 반환합니다.")
-	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId,
-			String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page) {
+	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page, @RequestParam Map<String, Object> param) {
 		if (searchKeywordType != null) {
 			searchKeywordType = searchKeywordType.trim();
 		}
@@ -55,15 +54,13 @@ public class AdmMemberController {
 
 		int itemsInAPage = 20;
 
-		List<Member> members = memberService.getForPrintMembers(searchKeywordType, searchKeyword, page,
-				itemsInAPage);
+		List<Member> members = memberService.getForPrintMembers(searchKeywordType, searchKeyword, page, itemsInAPage, param);
 
-		req.setAttribute("members", members);		
+		req.setAttribute("members", members);
 
 		return "adm/member/list";
 	}
 
-	
 	@RequestMapping(value = "/adm/member/join", method = RequestMethod.GET)
 	@ApiOperation(value = "회원가입 화면", notes = "성공시 join.jsp의 경로를 반환합니다.")
 	public String showJoin() {
@@ -78,7 +75,7 @@ public class AdmMemberController {
 			return Util.msgAndBack("loginId를 입력해주세요.");
 		}
 
-		Member existingMember = memberService.getMemberByLoginId((String)param.get("loginId"));
+		Member existingMember = memberService.getMemberByLoginId((String) param.get("loginId"));
 
 		if (existingMember != null) {
 			return Util.msgAndBack("이미 사용중인 로그인아이디 입니다.");
@@ -108,28 +105,21 @@ public class AdmMemberController {
 
 		String msg = String.format("%s님 환영합니다.", param.get("nickname"));
 
-		String redirectUrl = Util.ifEmpty((String)param.get("redirectUrl"), "../member/login");
+		String redirectUrl = Util.ifEmpty((String) param.get("redirectUrl"), "../member/login");
 
 		return Util.msgAndReplace(msg, redirectUrl);
 	}
-	
+
 	@RequestMapping(value = "/adm/member/login", method = RequestMethod.GET)
 	@ApiOperation(value = "로그인 화면", notes = "성공시 login.jsp의 경로를 반환합니다.")
-	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 접근"),
-		@ApiResponse(code = 500, message = "서버 에러")
-	})
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "잘못된 접근"), @ApiResponse(code = 500, message = "서버 에러") })
 	public String showLogin() {
 		return "adm/member/login";
 	}
 
 	@RequestMapping(value = "/adm/member/doLogin", method = RequestMethod.POST)
 	@ApiOperation(value = "로그인", notes = "성공시 로그인상태가 됩니다.")
-	@ApiImplicitParams({
-		@ApiImplicitParam( name = "loginId", value ="로그인아이디", required = true),
-		@ApiImplicitParam( name = "loginPw", value ="로그인비밀번호", required = true)
-	})
+	@ApiImplicitParams({ @ApiImplicitParam(name = "loginId", value = "로그인아이디", required = true), @ApiImplicitParam(name = "loginPw", value = "로그인비밀번호", required = true) })
 	@ResponseBody
 	public String doLogin(String loginId, String loginPw, String redirectUrl, HttpSession session) {
 		if (loginId == null) {
@@ -150,7 +140,7 @@ public class AdmMemberController {
 			return Util.msgAndBack("비밀번호가 일치하지 않습니다.");
 		}
 
-		if ( memberService.isAdmin(existingMember) == false ) {
+		if (memberService.isAdmin(existingMember) == false) {
 			return Util.msgAndBack("관리자만 접근할 수 있는 페이지 입니다.");
 		}
 
@@ -165,9 +155,7 @@ public class AdmMemberController {
 
 	@RequestMapping(value = "/adm/member/doModify", method = RequestMethod.POST)
 	@ApiOperation(value = "회원정보수정", notes = "성공시 회원정보가 수정됩니다.")
-	@ApiImplicitParams({
-		@ApiImplicitParam( name = "memberId", value ="회원번호", required = true)
-	})
+	@ApiImplicitParams({ @ApiImplicitParam(name = "memberId", value = "회원번호", required = true) })
 	@ResponseBody
 	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		if (param.isEmpty()) {
@@ -179,7 +167,7 @@ public class AdmMemberController {
 
 		return memberService.modify(param);
 	}
-	
+
 	@RequestMapping(value = "/adm/member/doLogout", method = RequestMethod.GET)
 	@ApiOperation(value = "로그아웃", notes = "성공시 로그아웃 상태가 됩니다.")
 	@ResponseBody

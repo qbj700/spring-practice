@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
-	MemberService memberService;
-	
 	private int id;
 	private String regDate;
 	private String updateDate;
@@ -29,6 +27,10 @@ public class Member {
 	private String email;
 	
 	public String getAuthLevelName() {
-		return "일반회원";
+		return MemberService.getAuthLevelName(this);
+	}
+	
+	public String getAuthLevelNameColor() {
+		return MemberService.getAuthLevelNameColor(this);
 	}
 }
