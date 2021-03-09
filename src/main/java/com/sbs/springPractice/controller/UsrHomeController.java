@@ -10,16 +10,4 @@ import com.sbs.springPractice.util.Util;
 
 @Controller
 public class UsrHomeController {
-	@RequestMapping("/usr/home/main")
-	@ResponseBody
-	public String showMain() {
-		return "안녕";
-	}
-	
-	@RequestMapping("/usr/home/doFormTest")
-	@ResponseBody
-	public Map<String, Object> doFormTest(String name, int age) {
-		return Util.mapOf("name", name, "age", age);
-	}
-
 }
