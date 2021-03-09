@@ -29,8 +29,7 @@ public class AdmMemberController extends BaseController {
 	@Autowired
 	private MemberService memberService;
 
-	@RequestMapping(value = "/adm/member/list", method = RequestMethod.GET)
-	@ApiOperation(value = "회원리스트", notes = "성공시 list.jsp의 경로를 반환합니다.")
+	@RequestMapping("/adm/member/list")
 	public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword, @RequestParam(defaultValue = "1") int page, @RequestParam Map<String, Object> param) {
 		if (searchKeywordType != null) {
 			searchKeywordType = searchKeywordType.trim();
@@ -61,14 +60,12 @@ public class AdmMemberController extends BaseController {
 		return "adm/member/list";
 	}
 
-	@RequestMapping(value = "/adm/member/join", method = RequestMethod.GET)
-	@ApiOperation(value = "회원가입 화면", notes = "성공시 join.jsp의 경로를 반환합니다.")
+	@RequestMapping("/adm/member/join")
 	public String showJoin() {
 		return "adm/member/join";
 	}
 
-	@RequestMapping(value = "/adm/member/doJoin", method = RequestMethod.POST)
-	@ApiOperation(value = "회원가입", notes = "성공시 msg와 redirectUrl을 반환합니다.")
+	@RequestMapping("/adm/member/doJoin")
 	@ResponseBody
 	public String doJoin(@RequestParam Map<String, Object> param) {
 		if (param.get("loginId") == null) {
@@ -110,16 +107,12 @@ public class AdmMemberController extends BaseController {
 		return Util.msgAndReplace(msg, redirectUrl);
 	}
 
-	@RequestMapping(value = "/adm/member/login", method = RequestMethod.GET)
-	@ApiOperation(value = "로그인 화면", notes = "성공시 login.jsp의 경로를 반환합니다.")
-	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "잘못된 접근"), @ApiResponse(code = 500, message = "서버 에러") })
+	@RequestMapping("/adm/member/login")
 	public String showLogin() {
 		return "adm/member/login";
 	}
 
-	@RequestMapping(value = "/adm/member/doLogin", method = RequestMethod.POST)
-	@ApiOperation(value = "로그인", notes = "성공시 로그인상태가 됩니다.")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "loginId", value = "로그인아이디", required = true), @ApiImplicitParam(name = "loginPw", value = "로그인비밀번호", required = true) })
+	@RequestMapping("/adm/member/doLogin")
 	@ResponseBody
 	public String doLogin(String loginId, String loginPw, String redirectUrl, HttpSession session) {
 		if (loginId == null) {
@@ -170,9 +163,7 @@ public class AdmMemberController extends BaseController {
 		return "adm/member/modify";
 	}
 
-	@RequestMapping(value = "/adm/member/doModify", method = RequestMethod.POST)
-	@ApiOperation(value = "회원정보수정", notes = "성공시 회원정보가 수정됩니다.")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "memberId", value = "회원번호", required = true) })
+	@RequestMapping("/adm/member/doModify")
 	@ResponseBody
 	public ResultData doModify(@RequestParam Map<String, Object> param, HttpServletRequest req) {
 		if (param.isEmpty()) {
@@ -185,8 +176,7 @@ public class AdmMemberController extends BaseController {
 		return memberService.modify(param);
 	}
 
-	@RequestMapping(value = "/adm/member/doLogout", method = RequestMethod.GET)
-	@ApiOperation(value = "로그아웃", notes = "성공시 로그아웃 상태가 됩니다.")
+	@RequestMapping("/adm/member/doLogout")
 	@ResponseBody
 	public String doLogout(HttpSession session) {
 		session.removeAttribute("loginedMemberId");

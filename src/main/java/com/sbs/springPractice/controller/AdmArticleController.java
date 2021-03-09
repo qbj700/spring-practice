@@ -39,16 +39,7 @@ public class AdmArticleController extends BaseController {
 
 	
 	@ResponseBody
-	@RequestMapping(value = "/adm/article/detail", method = RequestMethod.GET)
-	@ApiOperation(value = "게시물 상세", notes = "성공시 게시물에 대한 상세정보를 반환합니다.")
-	@ApiImplicitParams({
-		@ApiImplicitParam( name = "id", value ="게시물 번호", required = true)
-	})
-	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 접근"),
-		@ApiResponse(code = 500, message = "서버 에러")
-	})
+	@RequestMapping("/adm/article/detail")
 	public ResultData showDetail(Integer id) {
 		if (id == null) {
 			return new ResultData("F-1", "id를 입력해주세요.");

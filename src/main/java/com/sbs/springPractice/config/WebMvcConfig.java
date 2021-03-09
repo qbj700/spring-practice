@@ -60,7 +60,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 			.addPathPatterns("/**")
 			.excludePathPatterns("/")
 			.excludePathPatterns("/swagger-resources/**")
-			.excludePathPatterns("/swagger-ui.html")
+			.excludePathPatterns("/swagger-ui/**")
 			.excludePathPatterns("/v2/api-docs")
 			.excludePathPatterns("/webjars/**")
 			.excludePathPatterns("/gen/**")

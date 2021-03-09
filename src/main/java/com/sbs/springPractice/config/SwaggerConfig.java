@@ -22,16 +22,16 @@ public class SwaggerConfig {
 				.useDefaultResponseMessages(false)
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.sbs.springPractice.controller"))
-				.paths(PathSelectors.any())
+				.paths(PathSelectors.ant("/usr/**"))
 				.build()
 				.apiInfo(apiInfo());
 	}
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title("Spring-API")
-				.description("[Spring-practice] 를 이용한 API 명세서")
-				.contact(new Contact("Spring-practice", "https://github.com/qbj700/spring-practice", "qbj700@gmail.com"))
+				.title("커뮤니티 사이트 API")
+				.description("회원가입, 게시물 작성 등의 기능을 제공합니다.")
+				.contact(new Contact("제작자", "https://github.com/qbj700/spring-practice", "qbj700@gmail.com"))
 				.version("1.0").build();
 	}
 }
