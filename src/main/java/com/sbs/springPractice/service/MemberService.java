@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sbs.springPractice.dao.MemberDao;
+import com.sbs.springPractice.dto.GenFile;
 import com.sbs.springPractice.dto.Member;
 import com.sbs.springPractice.dto.ResultData;
 import com.sbs.springPractice.util.Util;
@@ -15,7 +16,7 @@ import com.sbs.springPractice.util.Util;
 public class MemberService {
 	@Autowired
 	private MemberDao memberDao;
-	
+
 	@Autowired
 	private GenFileService genFileService;
 
@@ -49,7 +50,7 @@ public class MemberService {
 		memberDao.join(param);
 
 		int id = Util.getAsInt(param.get("id"), 0);
-		
+
 		genFileService.changeInputFileRelIds(param, id);
 
 		return new ResultData("S-1", String.format("%s님 환영합니다.", param.get("nickname")), "id", id);
@@ -91,9 +92,34 @@ public class MemberService {
 
 		return memberDao.getForPrintMembers(param);
 	}
-	
+
 	public Member getForPrintMember(int id) {
 		return memberDao.getForPrintMember(id);
+	}
+
+	public Member getForPrintMemberByAuthKey(String authKey) {
+		Member member = memberDao.getMemberByAuthKey(authKey);
+
+		updateForPrint(member);
+
+		return member;
+	}
+
+	private void updateForPrint(Member member) {
+		GenFile genFile = genFileService.getGenFile("member", member.getId(), "common", "attachment", 1);
+
+		if (genFile != null) {
+			String imgUrl = genFile.getForPrintUrl();
+			member.setExtra__thumbImg(imgUrl);
+		}
+	}
+
+	public Member getForPrintMemberByLoginId(String loginId) {
+		Member member = memberDao.getMemberByLoginId(loginId);
+
+		updateForPrint(member);
+
+		return member;
 	}
 
 }
