@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @Controller
-public class AdmMemberController {
+public class AdmMemberController extends BaseController {
 	@Autowired
 	private MemberService memberService;
 
@@ -151,6 +151,23 @@ public class AdmMemberController {
 		redirectUrl = Util.ifEmpty(redirectUrl, "../home/main");
 
 		return Util.msgAndReplace(msg, redirectUrl);
+	}
+	
+	@RequestMapping("/adm/member/modify")
+	public String showModify(Integer id, HttpServletRequest req) {
+		if (id == null) {
+			return msgAndBack(req, "id를 입력해주세요.");
+		}
+
+		Member member = memberService.getForPrintMember(id);
+
+		req.setAttribute("member", member);
+
+		if (member == null) {
+			return msgAndBack(req, "존재하지 않는 회원번호 입니다.");
+		}
+
+		return "adm/member/modify";
 	}
 
 	@RequestMapping(value = "/adm/member/doModify", method = RequestMethod.POST)

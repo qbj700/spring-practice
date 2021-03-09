@@ -86,5 +86,9 @@ public class MemberService {
 
 		return memberDao.getForPrintMembers(param);
 	}
+	
+	public Member getForPrintMember(int id) {
+		return memberDao.getForPrintMember(id);
+	}
 
 }
