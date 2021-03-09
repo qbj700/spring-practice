@@ -15,6 +15,9 @@ import com.sbs.springPractice.util.Util;
 public class MemberService {
 	@Autowired
 	private MemberDao memberDao;
+	
+	@Autowired
+	private GenFileService genFileService;
 
 	// static 시작
 
@@ -46,6 +49,8 @@ public class MemberService {
 		memberDao.join(param);
 
 		int id = Util.getAsInt(param.get("id"), 0);
+		
+		genFileService.changeInputFileRelIds(param, id);
 
 		return new ResultData("S-1", String.format("%s님 환영합니다.", param.get("nickname")), "id", id);
 	}
