@@ -1,6 +1,9 @@
 server:
   port: 8021
 spring:
+  boot:    admin:      client:        url: http://localhost:18080
+        instance:
+          name: SpringPractice          service-url: http://localhost:18080
   servlet:
     multipart:
       max-file-size: 50MB
@@ -22,3 +25,5 @@ custom:
   logging:
       dir: log
       level: debug
+  
+   
